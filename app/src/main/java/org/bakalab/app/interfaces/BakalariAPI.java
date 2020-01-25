@@ -11,21 +11,21 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface BakalariAPI {
-    @GET("login.aspx?pm=znamky")
-    Call<ZnamkyRoot> getZnamky(@Query("hx") String token);
+	@GET("login.aspx?pm=znamky")
+	Call<ZnamkyRoot> getZnamky(@Query("hx") String token);
 
-    @GET("login.aspx?pm=ukoly")
-    Call<UkolyList> getUkoly(@Query("hx") String token);
+	@GET("login.aspx?pm=ukoly")
+	Call<UkolyList> getUkoly(@Query("hx") String token);
 
-    @GET("login.aspx?pm=rozvrh")
-    Call<RozvrhRoot> getRozvrh(@Query("hx") String token, @Query("pmd") String date);
+	@GET("login.aspx?pm=rozvrh")
+	Call<RozvrhRoot> getRozvrh(@Query("hx") String token, @Query("pmd") String date);
 
-    @GET("login.aspx?pm=all")
-    Call<MainScreen> getMain(@Query("hx") String token);
+	@GET("login.aspx?pm=all")
+	Call<MainScreen> getMain(@Query("hx") String token);
 
-    @GET("login.aspx?pm=akce")
-    Call<AkceRoot> getAkce(@Query("hx") String token);
+	@GET("login.aspx?pm=akce")
+	Call<AkceRoot> getAkce(@Query("hx") String token);
 
-    // TODO Sergeji sem absenci vec
+	// TODO Sergeji sem absenci vec
 
 }

@@ -38,7 +38,7 @@
     <string name="home">Domů</string>
     <string name="next_hour">Další hodina</string>
     <string name="free_hour">Volná hodina</string>
-    <string name="rozvrh_description">Začíná v %1$s, učebna %2$s, %3$s</string>
+    <string name="rozvrh_description">Začíná v %1$s, učebna %2$s (%3$s)</string>
     <string name="look">Vzhled</string>
 
     <string name="change_view">Změnit pohled</string>

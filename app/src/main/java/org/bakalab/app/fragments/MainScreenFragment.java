@@ -32,6 +32,7 @@ import org.bakalab.app.items.znamky.Znamka;
 import org.bakalab.app.items.znamky.ZnamkyRoot;
 import org.bakalab.app.utils.BakaTools;
 import org.bakalab.app.utils.ItemClickSupport;
+import org.bakalab.app.utils.CallFragments;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -249,85 +250,16 @@ public class MainScreenFragment extends Fragment implements Callback, SwipeRefre
 		showSkeletons();
 		blockClick = true;
 
-		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl(BakaTools.getUrl(this.getContext()))
-				.addConverterFactory(SimpleXmlConverterFactory.createNonStrict())
-				.build();
-
-		BakalariAPI bakalariAPI = retrofit.create(BakalariAPI.class);
-
-		Call<RozvrhRoot> call = bakalariAPI.getRozvrh(BakaTools.getToken(this.getContext()),Utils.getCurrentMonday());
-		Log.d("Debug","Sending Query");
-		nextTitle.setText("Loading");
-		nextDesc.setText("Please Wait");
+		CallFragments.requestRozvrh(nextTitle,nextDesc,swipeRefreshLayout, this.getContext()); //request next period
 		skeletonScreenNext.hide();
 
-		call.enqueue(new retrofit2.Callback<RozvrhRoot>() {
-						 @SuppressLint("SimpleDateFormat")
-						 @Override
-						 @EverythingIsNonNull
-						 public void onResponse(Call<RozvrhRoot> call, Response<RozvrhRoot> response) {
-							Log.d("Debug","Response is Here");
-							 if (!response.isSuccessful()) {
-								 Log.d("Error", response.message());
-								 return;
-							 }
+		CallFragments.requestZnamky(swipeRefreshLayout, znamkaList, znamkyBasicAdapter, this.getContext()); //request grades
+		skeletonScreenZnamky.hide();
 
-							 assert response.body() != null;
-							 Rozvrh r = response.body().getRozvrh();
-							 List<RozvrhDen> rds = r.getDny();
-							 RozvrhDen rd;
-							 Log.d("Debug",new SimpleDateFormat("EE").format(new Date()));
-							 switch(new SimpleDateFormat("EE").format(new Date())){
-								 case "tue":
-								 case "Tue":
-								 case "ut":
-								 case "Ut":
-								 case "út":
-								 case "Út":
-								 	rd=rds.get(1); break;
-								 case "wed":
-								 case "Wed":
-								 case "St":
-								 case "st":
-								 	rd=rds.get(2); break;
-								 case "thu":
-								 case "Thu":
-								 case "ct":
-								 case "Ct":
-								 case "čt":
-								 case "Čt":
-								 	rd=rds.get(3); break;
-								 case "fri":
-								 case "Fri":
-								 case "pa":
-								 case "Pa":
-								 case "Pá": //prostě neni čas na testování jakej den je jakej lmao
-								 case "pá":
-								 	rd=rds.get(4); break;
-								 default: //TODO: víkend a pondělí implementace
-								 	rd=rds.get(0); break;
-							 }
-							Log.d("Debug", "Got here");
-							 Log.d("Debug",String.valueOf(new Date().getDay()));
-							 RozvrhHodina rh = rd.getHodiny().get(((new Date().getDay() != 6)||(new Date().getDay() != 5))? 1:rd.getCurrentLessonInt()-1);
+		//TODO ukoly call
+		CallFragments.requestUkoly(swipeRefreshLayout, ukolList, ukolyBasicAdapter, this.getContext());
+		skeletonScreenUkoly.hide();
 
-							 nextTitle.setText(String.format("%1s (%2s)",rh.getPr(),rh.getZkrpr()));
-							 nextDesc.setText(String.format("Začíná v %1s, místnost %2s (%3s)", rh.getBegintime(), rh.getZkrmist(),rh.getZkruc()));
-							 swipeRefreshLayout.setRefreshing(false);
-
-							 Log.d("Debug","Finished response processing");
-//							 onCallbackFinish(v);
-						 }
-
-						 @Override
-						 public void onFailure(Call<RozvrhRoot> call, Throwable t) {
-							nextTitle.setText("Error");
-							nextDesc.setText(t.getMessage());
-							swipeRefreshLayout.setRefreshing(false);
-						 }
-					 }
-		);
 	}
 
 	@Override

@@ -3,7 +3,8 @@ package org.bakalab.app.items.absence_item;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
-@Root(strict = false, name = "predmet")
+// FIXME: 28.01.2020 shit be broken throwing
+//@Root(strict = false, name = "predmet")
 public class AbsPredmet {
 	public AbsPredmet(){
 		super();

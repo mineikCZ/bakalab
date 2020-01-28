@@ -146,7 +146,7 @@ public class AbsenceFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     Log.d("Debug",String.valueOf(response.body().getAbsence().getZameskanost().getNadpis()));
                     Log.d("Debug",String.valueOf(predmety.get(0).getProcentaAbs()));
                 }catch(Exception e){
-                    absPredmetList.add(new AbsPredmet("Žádné položky k zobrazení"));
+//                    absPredmetList.add(new AbsPredmet("Žádné položky k zobrazení"));
                     skeletonScreen.hide();
                 }
 
@@ -165,10 +165,10 @@ public class AbsenceFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 Toast ErrorToast = Toast.makeText(getContext(), String.format("Error: %1s", t.getMessage()), Toast.LENGTH_LONG );
                 ErrorToast.setMargin(50,10);
                 ErrorToast.show();
-                absPredmetList.clear();
-                absPredmetList.add(new AbsPredmet("Žádné položky k zobrazení"));
-                adapter.notifyDataSetChanged();
-                skeletonScreen.hide();
+//                absPredmetList.clear();
+//                absPredmetList.add(new AbsPredmet("Žádné položky k zobrazení"));
+//                adapter.notifyDataSetChanged();
+//                skeletonScreen.hide();
             }
         });
     }

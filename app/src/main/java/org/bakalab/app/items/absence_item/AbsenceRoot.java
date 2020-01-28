@@ -1,6 +1,5 @@
-package org.bakalab.app.items.absence;
+package org.bakalab.app.items.absence_item;
 
-import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -8,7 +7,7 @@ import org.simpleframework.xml.Root;
 public class AbsenceRoot {
 	public AbsenceRoot(){ super();}
 
-	@Element(required = false, name="absence")
+	@Element(required = false)
 	private Absence absence;
 
 	public Absence getAbsence() {

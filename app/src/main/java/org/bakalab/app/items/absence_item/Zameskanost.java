@@ -6,7 +6,7 @@ import org.simpleframework.xml.Root;
 
 import java.util.List;
 
-@Root(strict = false)
+//@Root(strict = false)
 public class Zameskanost {
 	public Zameskanost(){
 		super();

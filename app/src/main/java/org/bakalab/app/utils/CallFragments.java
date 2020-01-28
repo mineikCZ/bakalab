@@ -3,30 +3,21 @@ package org.bakalab.app.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
-
 import android.widget.TextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.bakalab.app.adapters.UkolyBasicAdapter;
-import org.bakalab.app.adapters.UkolyPagerAdapter;
 import org.bakalab.app.adapters.ZnamkyBasicAdapter;
-import org.bakalab.app.adapters.ZnamkyPredmetAdapter;
-import org.bakalab.app.fragments.UkolyPageFragment;
 import org.bakalab.app.interfaces.BakalariAPI;
-import org.bakalab.app.R;
-import org.bakalab.app.items.*;
 import org.bakalab.app.items.rozvrh.Rozvrh;
 import org.bakalab.app.items.rozvrh.RozvrhDen;
 import org.bakalab.app.items.rozvrh.RozvrhHodina;
 import org.bakalab.app.items.rozvrh.RozvrhRoot;
-
 import org.bakalab.app.items.ukoly.Ukol;
 import org.bakalab.app.items.ukoly.UkolyList;
-import org.bakalab.app.items.znamky.Predmet;
 import org.bakalab.app.items.znamky.Znamka;
 import org.bakalab.app.items.znamky.ZnamkyRoot;
+
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -69,14 +60,15 @@ public class CallFragments {
 
 							 boolean init = false;
 							 String currentDay = new SimpleDateFormat("EE").format(new Date());
+							 String currD = new SimpleDateFormat("dd").format(new Date());
 							 Log.d("Debug",currentDay);
-							 if(currentDay.equals("so") || currentDay.equals("ne")){
-								 rd = rds.get(0);
+
+							 if(new Date().getDay() >= 1 && new Date().getDay() < 6){
+							 	rd = rds.get(new Date().getDay());
+							 	init = true;
 							 }else{
-								 for(RozvrhDen d: rds) if(d.getDay().equals(currentDay)){
-								 	rd = d;
-								 	init = true;
-								 }
+							 	rd = rds.get(0);
+							 	init = true;
 							 }
 
 							 if(!init) rd = rds.get(0); //just double check, we have initialized RozvrhDen and we won't fall through assert :)
@@ -129,8 +121,6 @@ public class CallFragments {
 				znamkaList.addAll(response.body().getSortedZnamky());
 				znamkyAdapter.notifyDataSetChanged();
 
-//				predmetList.addAll(response.body().getPredmety());
-
 				swipeRefreshLayout.setRefreshing(false);
 
 			}
@@ -163,7 +153,7 @@ public class CallFragments {
 					Log.e("Error", response.message());
 					return;
 				}
-
+				ukolList.clear();
 				List<Ukol> listTodo = new ArrayList<>();
 				List<Ukol> listFinished = new ArrayList<>();
 
@@ -171,8 +161,10 @@ public class CallFragments {
 				for(Ukol ukol : response.body().getUkoly())
 					if (ukol.getStatus().equals("probehlo") || (SharedPrefHandler.getDefaultBool(context, "ukoly_done") && ukol.getStatus().equals("pozde")))
 						listFinished.add(ukol);
-					else
+					else if (ukol.getStatus().equals("aktivni") || (!SharedPrefHandler.getDefaultBool(context, "ukoly_done") && ukol.getStatus().equals("pozde")))
 						listTodo.add(ukol);
+					else
+						listFinished.add(ukol);
 
 
 				ukolList.addAll(listTodo);

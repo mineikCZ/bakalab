@@ -7,14 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Toast;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 
 import org.bakalab.app.R;
-import org.bakalab.app.adapters.ZnamkyPredmetAdapter;
+import org.bakalab.app.adapters.AbsenceBasicAdapter;
 import org.bakalab.app.interfaces.BakalariAPI;
-import org.bakalab.app.items.znamky.Predmet;
-import org.bakalab.app.items.znamky.ZnamkyRoot;
+import org.bakalab.app.items.absence.AbsPredmet;
+import org.bakalab.app.items.absence.AbsenceRoot;
 import org.bakalab.app.utils.BakaTools;
 
 import java.util.ArrayList;
@@ -34,8 +35,8 @@ import retrofit2.internal.EverythingIsNonNull;
 
 
 public class AbsenceFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    private List<Predmet> znamkaList = new ArrayList<>();
-    private ZnamkyPredmetAdapter adapter = new ZnamkyPredmetAdapter(znamkaList);
+    private List<AbsPredmet> absPredmetList = new ArrayList<>();
+    private AbsenceBasicAdapter adapter = new AbsenceBasicAdapter(absPredmetList);
 
     private boolean clickable;
 
@@ -67,7 +68,7 @@ public class AbsenceFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter.setResourceString(getString(R.string.predmety_popis));
+//        adapter.setResourceString(getString(R.string.predmety_popis));
 
         swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
         recyclerView = view.findViewById(R.id.recycler);
@@ -131,31 +132,41 @@ public class AbsenceFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         BakalariAPI bakalariAPI = retrofit.create(BakalariAPI.class);
 
-        Call<ZnamkyRoot> call = bakalariAPI.getZnamky(BakaTools.getToken(this.getContext()));
+        Call<AbsenceRoot> call = bakalariAPI.getAbsence(BakaTools.getToken(this.getContext()));
 
-        call.enqueue(new retrofit2.Callback<ZnamkyRoot>() {
+        call.enqueue(new retrofit2.Callback<AbsenceRoot>() {
             @Override
             @EverythingIsNonNull
-            public void onResponse(Call<ZnamkyRoot> call, Response<ZnamkyRoot> response) {
+            public void onResponse(Call<AbsenceRoot> call, Response<AbsenceRoot> response) {
                 if (!response.isSuccessful()) {
                     Log.d("Error", response.message());
                     return;
                 }
 
-                znamkaList.clear();
+                assert response.body() != null;
+                List<AbsPredmet> predmety = response.body().getAbsence().getZameskanost().getPredmety();
+                try{
+                    Log.d("Debug",String.valueOf(predmety.get(0).getProcentaAbs()));
+                }catch(java.lang.IndexOutOfBoundsException e){
+                    absPredmetList.add(new AbsPredmet("Žádné položky k zobrazení"));
+                    skeletonScreen.hide();
+                }
 
-                znamkaList.addAll(response.body().getPredmety());
+                absPredmetList.addAll(predmety);
                 adapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
                 skeletonScreen.hide();
-                clickable = true;
+                swipeRefreshLayout.setRefreshing(false);
+
+
             }
 
             @Override
             @EverythingIsNonNull
-            public void onFailure(Call<ZnamkyRoot> call, Throwable t) {
+            public void onFailure(Call<AbsenceRoot> call, Throwable t) {
                 Log.d("Error", t.getMessage());
-
+                Toast ErrorToast = Toast.makeText(getContext(), String.format("Error: %1s", t.getMessage()), Toast.LENGTH_LONG );
+                ErrorToast.setMargin(50,10);
+                ErrorToast.show();
             }
         });
     }

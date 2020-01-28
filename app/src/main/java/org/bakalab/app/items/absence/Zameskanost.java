@@ -1,8 +1,6 @@
 package org.bakalab.app.items.absence;
 
 import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +10,8 @@ public class Zameskanost {
 		super();
 	}
 
-	@Element(required = false , name="Predmet")
-	private List<Predmet> predmet = new ArrayList<>();
+	@ElementList(required = false , name="predmet")
+	private List<AbsPredmet> absPredmet = new ArrayList<>();
 
-	public List<Predmet> getPredmet() {return predmet;}
+	public List<AbsPredmet> getPredmety() {return absPredmet;}
 }

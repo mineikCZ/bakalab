@@ -1,6 +1,7 @@
 package org.bakalab.app.fragments;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +16,10 @@ import org.bakalab.app.items.akce.Akce;
 import org.bakalab.app.items.akce.AkceRoot;
 import org.bakalab.app.utils.BakaTools;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -117,6 +121,7 @@ public class AkceFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Call<AkceRoot> call = bakalariAPI.getAkce(BakaTools.getToken(this.getContext()));
 
         call.enqueue(new retrofit2.Callback<AkceRoot>() {
+            @SuppressLint("SimpleDateFormat")
             @Override
             @EverythingIsNonNull
             public void onResponse(Call<AkceRoot> call, Response<AkceRoot> response) {
@@ -129,7 +134,19 @@ public class AkceFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 akceList.clear();
 
-                akceList.addAll(response.body().getAkceall());
+                for(Akce a: response.body().getAkceall()){ //ensure we only printing relevant events
+                    try {
+                        if (new SimpleDateFormat("yyyyMMdd").parse(a.getDatum()).before(new Date())) {
+                            continue;
+                        }else{
+                            akceList.add(a);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+//                akceList.addAll(response.body().getAkceall());
 
                 adapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);

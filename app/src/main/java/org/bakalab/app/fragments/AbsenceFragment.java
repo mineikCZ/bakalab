@@ -14,8 +14,8 @@ import com.ethanhua.skeleton.SkeletonScreen;
 import org.bakalab.app.R;
 import org.bakalab.app.adapters.AbsenceBasicAdapter;
 import org.bakalab.app.interfaces.BakalariAPI;
-import org.bakalab.app.items.absence.AbsPredmet;
-import org.bakalab.app.items.absence.AbsenceRoot;
+import org.bakalab.app.items.absence_item.AbsPredmet;
+import org.bakalab.app.items.absence_item.AbsenceRoot;
 import org.bakalab.app.utils.BakaTools;
 
 import java.util.ArrayList;
@@ -113,10 +113,6 @@ public class AbsenceFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
 
     private void makeRequest() {
-
-
-        // TODO Sergeji tohle udelej
-
         clickable = false;
 
         skeletonScreen = Skeleton.bind(recyclerView)
@@ -142,12 +138,14 @@ public class AbsenceFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     Log.d("Error", response.message());
                     return;
                 }
-
+                absPredmetList.clear();
                 assert response.body() != null;
                 List<AbsPredmet> predmety = response.body().getAbsence().getZameskanost().getPredmety();
                 try{
+                    Log.d("Debug",String.valueOf(response.body().getAbsence().getStrop()));
+                    Log.d("Debug",String.valueOf(response.body().getAbsence().getZameskanost().getNadpis()));
                     Log.d("Debug",String.valueOf(predmety.get(0).getProcentaAbs()));
-                }catch(java.lang.IndexOutOfBoundsException e){
+                }catch(Exception e){
                     absPredmetList.add(new AbsPredmet("Žádné položky k zobrazení"));
                     skeletonScreen.hide();
                 }
@@ -167,6 +165,10 @@ public class AbsenceFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 Toast ErrorToast = Toast.makeText(getContext(), String.format("Error: %1s", t.getMessage()), Toast.LENGTH_LONG );
                 ErrorToast.setMargin(50,10);
                 ErrorToast.show();
+                absPredmetList.clear();
+                absPredmetList.add(new AbsPredmet("Žádné položky k zobrazení"));
+                adapter.notifyDataSetChanged();
+                skeletonScreen.hide();
             }
         });
     }

@@ -1,6 +1,8 @@
 package org.bakalab.app.adapters;
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +11,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.bakalab.app.R;
-import org.bakalab.app.items.absence.AbsPredmet;
+import org.bakalab.app.items.absence_item.AbsPredmet;
 
 import java.util.List;
 
@@ -47,13 +50,12 @@ public class AbsenceBasicAdapter extends RecyclerView.Adapter<AbsenceBasicAdapte
 
 		if(absPredmet.getProcentaAbs() >= 0.3){
 			holder.symbol.setImageResource(R.drawable.ic_report);
-//			ImageViewCompat.setImageTintList(holder.symbol, ColorStateList.valueOf(Color.parseColor(String.valueOf(R.color.errorColor))));
+			ImageViewCompat.setImageTintList(holder.symbol, ColorStateList.valueOf(Color.parseColor("#b00020")));
 		}else if(absPredmet.getProcentaAbs() == 0){
 			holder.symbol.setImageResource(R.drawable.ic_done_all);
-//			ImageViewCompat.setImageTintList(holder.symbol, ColorStateList.valueOf(Color.parseColor(String.valueOf(R.color.design_default_color_primary))));
+			ImageViewCompat.setImageTintList(holder.symbol, ColorStateList.valueOf(Color.parseColor("#1976d2")));
 		}else{
 			holder.symbol.setImageResource(R.drawable.ic_done);
-//			ImageViewCompat.setImageTintList(holder.symbol, ColorStateList.valueOf(Color.parseColor(String.valueOf(R.color.secondaryColor))));
 		}
 
 	}

@@ -9,6 +9,13 @@ public class RozvrhHodina {
         super();
     }
 
+    public RozvrhHodina(String nazev, String zkratka, String zkruc, String begintime){
+        this.pr = nazev;
+        this.zkrpr = zkratka;
+        this.zkrmist = zkruc;
+        this.begintime = begintime;
+    }
+
     private String begintime = "";
 
     private String endtime = "";

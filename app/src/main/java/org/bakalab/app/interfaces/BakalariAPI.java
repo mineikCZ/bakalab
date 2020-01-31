@@ -1,5 +1,6 @@
 package org.bakalab.app.interfaces;
 
+import org.bakalab.app.items.absence.Abs;
 import org.bakalab.app.items.absence_item.AbsenceRoot;
 import org.bakalab.app.items.akce.AkceRoot;
 import org.bakalab.app.items.main.MainScreen;
@@ -28,6 +29,6 @@ public interface BakalariAPI {
 	Call<AkceRoot> getAkce(@Query("hx") String token);
 
 	@GET("login.aspx?pm=absence")
-	Call<AbsenceRoot> getAbsence(@Query("hx") String token);
+	Call<Abs> getAbsence(@Query("hx") String token);
 
 }

@@ -2,10 +2,12 @@ package org.bakalab.app.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.TextView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import org.bakalab.app.activities.LoginActivity;
 import org.bakalab.app.adapters.UkolyBasicAdapter;
 import org.bakalab.app.adapters.ZnamkyBasicAdapter;
 import org.bakalab.app.interfaces.BakalariAPI;
@@ -24,6 +26,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 import retrofit2.internal.EverythingIsNonNull;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,11 +35,20 @@ import java.util.List;
 
 public class CallFragments {
 	public static void requestRozvrh(final TextView nextTitle, final TextView nextDesc, final SwipeRefreshLayout swipeRefreshLayout, Context context){
-		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl(BakaTools.getUrl(context))
-				.addConverterFactory(SimpleXmlConverterFactory.createNonStrict())
-				.build();
+		Retrofit retrofit =  null;
+		try{
+			retrofit = new Retrofit.Builder()
+					.baseUrl(BakaTools.getUrl(context))
+					.addConverterFactory(SimpleXmlConverterFactory.createNonStrict())
+					.build();
+		}catch(Exception e){
+			Intent in = new Intent(context, LoginActivity.class);
+			in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(in);
+		}
 
+
+		assert retrofit != null;
 		BakalariAPI bakalariAPI = retrofit.create(BakalariAPI.class);
 
 		Call<RozvrhRoot> call = bakalariAPI.getRozvrh(BakaTools.getToken(context),Utils.getCurrentMonday());
@@ -64,8 +76,20 @@ public class CallFragments {
 							 Log.d("Debug",currentDay);
 
 							 if(new Date().getDay() >= 1 && new Date().getDay() < 6){
-							 	rd = rds.get(new Date().getDay());
-							 	init = true;
+							 	rd = rds.get(new Date().getDay()-1);
+								 try {
+									 if(new SimpleDateFormat("hh").parse(rd.getHodiny().get(rd.getHodiny().size()-1).getEndtime()).getHours() > new Date().getHours()){
+									 	if(new Date().getDay() == 5){
+									 		rd=rds.get(0);
+										}else{
+									 		rd=rds.get(new Date().getDay());
+										}
+									 }
+
+									 init = true;
+								 } catch (Exception e) {
+									 e.printStackTrace();
+								 }
 							 }else{
 							 	rd = rds.get(0);
 							 	init = true;
@@ -76,7 +100,30 @@ public class CallFragments {
 							 Log.d("Debug", "Got here");
 							 Log.d("Debug",String.valueOf(new Date().getDay()));
 							 assert rd != null;
-							 RozvrhHodina rh = rd.getHodiny().get(((new Date().getDay() != 6)||(new Date().getDay() != 5))? 1:rd.getCurrentLessonInt());
+							 Date d = new Date();
+							 RozvrhHodina rh;
+
+							 if(d.getDay() == 6 || d.getDay() == 7){
+							 	try{
+							 		rh = rd.getHodiny().get(1);
+								}catch (Exception e){
+							 		 rh = new RozvrhHodina("Prázdniny / Volno", "Yay", "Doma", "Ráno");
+								}
+							 }else{
+							 	try{
+							 		if(d.getHours() < new SimpleDateFormat("hh:mm").parse(rd.getHodiny().get(rd.getHodiny().size()-1).getEndtime()).getHours()){
+							 			 rh = rd.getHodiny().get(rd.getCurrentLessonInt());
+									}else{
+							 			 rh = rd.getHodiny().get(1);
+										 if(rh.getPr().equals(null) || rh.getPr().equals("null")){
+										 	rh = rd.getHodiny().get(2);
+										 }
+									}
+								}catch(Exception e){
+									 rh = new RozvrhHodina("Prázdniny / Volno", "Yay", "Doma", "Ráno");
+								}
+							 }
+
 
 							 nextTitle.setText(String.format("%1s (%2s)",rh.getPr(),rh.getZkrpr()));
 							 nextDesc.setText(String.format("Začíná v %1s, místnost %2s (%3s)", rh.getBegintime(), rh.getZkrmist(),rh.getZkruc()));
@@ -136,11 +183,19 @@ public class CallFragments {
 	}
 
 	public static void requestUkoly(final SwipeRefreshLayout swipeRefreshLayout, final List<Ukol> ukolList, final UkolyBasicAdapter ukolAdapter, final Context context){
-		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl(BakaTools.getUrl(context))
-				.addConverterFactory(SimpleXmlConverterFactory.createNonStrict())
-				.build();
+		Retrofit retrofit = null;
+		try{
+			retrofit = new Retrofit.Builder()
+					.baseUrl(BakaTools.getUrl(context))
+					.addConverterFactory(SimpleXmlConverterFactory.createNonStrict())
+					.build();
+		}catch(Exception e){
+			Intent in = new Intent(context, LoginActivity.class);
+			in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(in);
+		}
 
+		assert retrofit != null;
 		BakalariAPI bakalariAPI = retrofit.create(BakalariAPI.class);
 
 		Call<UkolyList> call = bakalariAPI.getUkoly(BakaTools.getToken(context));

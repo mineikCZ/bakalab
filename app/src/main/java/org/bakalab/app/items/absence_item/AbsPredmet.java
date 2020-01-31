@@ -1,10 +1,11 @@
 package org.bakalab.app.items.absence_item;
 
+import android.util.Log;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
-// FIXME: 28.01.2020 shit be broken throwing
-//@Root(strict = false, name = "predmet")
+//TODO co je kurva tohle
+@Root(strict = false, name = "predmet")
 public class AbsPredmet {
 	public AbsPredmet(){
 		super();
@@ -29,12 +30,10 @@ public class AbsPredmet {
 	private String abslate;
 
 
-	public String getNazev() {
-		return nazev;
-	}
+	public String getNazev() { return nazev; }
 
 	public double getProcentaAbs(){
-		return (double) Integer.parseInt(oduceno) / Integer.parseInt(absbase);
+		return Double.parseDouble(absbase) / Double.parseDouble(oduceno);
 	}
 
 	public int getAbsence(){

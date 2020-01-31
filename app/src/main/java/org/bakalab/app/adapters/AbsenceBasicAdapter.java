@@ -45,7 +45,7 @@ public class AbsenceBasicAdapter extends RecyclerView.Adapter<AbsenceBasicAdapte
 		holder.predmet.setEllipsize(TextUtils.TruncateAt.END);
 
 		holder.predmet.setText(absPredmet.getNazev());
-		holder.procenta.setText(String.valueOf((int) absPredmet.getProcentaAbs()*100)+"%");
+		holder.procenta.setText(String.valueOf((int)(absPredmet.getProcentaAbs()*100))+"%");
 		holder.popis.setText(String.format("Absence: %1d Pozdní příchody: %2d (Odučeno %3d hodin)", absPredmet.getAbsence(), absPredmet.getPozdniPrichody(), absPredmet.getOduceno()));
 
 		if(absPredmet.getProcentaAbs() >= 0.3){

@@ -15,8 +15,7 @@ import org.bakalab.app.R;
 import org.bakalab.app.adapters.AbsenceBasicAdapter;
 import org.bakalab.app.interfaces.BakalariAPI;
 import org.bakalab.app.items.absence.Abs;
-import org.bakalab.app.items.absence_item.AbsPredmet;
-import org.bakalab.app.items.absence_item.AbsenceRoot;
+import org.bakalab.app.items.absence.AbsPredmet;
 import org.bakalab.app.utils.BakaTools;
 
 import java.util.ArrayList;

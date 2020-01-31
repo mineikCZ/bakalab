@@ -1,15 +1,12 @@
 package org.bakalab.app.items.absence;
 
 import android.util.Log;
-import org.bakalab.app.items.absence_item.AbsPredmet;
 
 import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.core.Commit;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Root(name = "results", strict=false)

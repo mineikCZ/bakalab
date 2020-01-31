@@ -1,4 +1,4 @@
-package org.bakalab.app.items.absence_item;
+package org.bakalab.app.items.absence;
 
 import android.util.Log;
 import org.simpleframework.xml.Element;

@@ -15,7 +15,7 @@ import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.bakalab.app.R;
-import org.bakalab.app.items.absence_item.AbsPredmet;
+import org.bakalab.app.items.absence.AbsPredmet;
 
 import java.util.List;
 
